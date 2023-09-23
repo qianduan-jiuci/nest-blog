@@ -1,24 +1,21 @@
 import { Injectable } from '@nestjs/common';
-import { CreateArticleDto } from './dto/create-article.dto';
-import { UpdateArticleDto } from './dto/update-article.dto';
 import { PrismaService } from '@/prisma/prisma.service';
 import { ConfigService } from '@nestjs/config';
+import { CreateCategoryDto } from './dto/create-category.dto';
 import { PageDto } from '@/dto/page.dto';
-import _ from 'lodash';
+import { UpdateCategoryDto } from './dto/update-category.dto';
 
 @Injectable()
-export class ArticleService {
+export class CategoryService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly config: ConfigService,
   ) {}
 
-  async create(article: CreateArticleDto) {
-    await this.prisma.artilce.create({
+  async create(category: CreateCategoryDto) {
+    await this.prisma.category.create({
       data: {
-        account: article.account,
-        title: article.title,
-        categoryId: _._.random(1, 5),
+        title: category.title,
       },
     });
     return {
@@ -29,34 +26,34 @@ export class ArticleService {
 
   async findAll({ page = 1 }: PageDto) {
     const row = this.config.get('PAGE_ROW');
-    const articles = await this.prisma.artilce.findMany({
+    const categorys = await this.prisma.category.findMany({
       skip: (page - 1) * row,
       take: +row,
     });
     return {
       meta: {
         current_page: page,
-        total: await this.prisma.artilce.count(),
-        total_pages: Math.ceil((await this.prisma.artilce.count()) / row),
+        total: await this.prisma.category.count(),
+        total_pages: Math.ceil((await this.prisma.category.count()) / row),
       },
-      data: articles,
+      data: categorys,
     };
   }
 
   async findOne(id: number) {
-    return await this.prisma.artilce.findUnique({
+    return await this.prisma.category.findUnique({
       where: {
         id,
       },
     });
   }
 
-  async update(id: number, articleData: UpdateArticleDto) {
-    await this.prisma.artilce.update({
+  async update(id: number, categoryData: UpdateCategoryDto) {
+    await this.prisma.category.update({
       where: {
         id,
       },
-      data: articleData,
+      data: categoryData,
     });
 
     return {
@@ -66,7 +63,7 @@ export class ArticleService {
   }
 
   async remove(id: number) {
-    await this.prisma.artilce.delete({
+    await this.prisma.category.delete({
       where: {
         id,
       },

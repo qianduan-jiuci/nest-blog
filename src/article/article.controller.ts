@@ -10,6 +10,7 @@ import {
 import { ArticleService } from './article.service';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
+import { PageDto } from '@/dto/page.dto';
 
 @Controller('article')
 export class ArticleController {
@@ -20,9 +21,9 @@ export class ArticleController {
     return this.articleService.create(article);
   }
 
-  @Get('all')
-  findAll() {
-    return this.articleService.findAll();
+  @Post('all')
+  findAll(@Body() body: PageDto) {
+    return this.articleService.findAll(body);
   }
 
   @Get(':id')
@@ -37,7 +38,6 @@ export class ArticleController {
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    console.log(id);
     return this.articleService.remove(+id);
   }
 }
